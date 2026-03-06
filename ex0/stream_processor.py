@@ -19,23 +19,20 @@ class NumericProcessor(DataProcessor):
     def __init__(self) -> None:
         print("\nInitializing Numeric Processor...")
 
-    def validate(self, data: list[int]) -> bool:
+    def validate(self, data: list[float]) -> bool:
         if isinstance(data, list) and len(data) > 0:
-            if all(isinstance(i, (int, float)) for i in data):
+            if all(isinstance(i, (float)) for i in data):
                 return True
         return False
 
-    def process(self, data: list[int]) -> str:
+    def process(self, data: list[float]) -> str:
         try:
             if not self.validate(data):
                 raise ValueError("Invalid numeric data")
 
             count: int = len(data)
-            total: int = sum(data)
+            total: float = sum(data)
             avg: float = total / count
-
-            print(f"Processing Data: {data}")
-            print("Validation: Numeric data verified")
 
             result = (
                 f"Processed {count} numeric values, sum={total}, avg={avg}"
@@ -65,9 +62,6 @@ class TextProcessor(DataProcessor):
             chars: int = len(data)
             words: int = len(data.split())
 
-            print(f"Processing Data: {data}")
-            print("Validation: Text data verified")
-
             result = f"Processed text: {chars} characters, {words} words"
             return self.format_output(result)
         except ValueError as e:
@@ -93,7 +87,7 @@ class LogProcessor(DataProcessor):
                 raise ValueError("Invalid text string")
 
             level = data.split(":")[0]
-            message = data.split(":")[1]
+            message = data.split(":")[1].strip()
 
             if level == "ERROR":
                 tag = "[ALERT]"
@@ -102,13 +96,10 @@ class LogProcessor(DataProcessor):
             else:
                 tag = "[DEFAULT]"
 
-            print(f"Processing Data: {data}")
-            print("Validation: Log entry verified")
-
             result = f"{tag} {level} level detected: {message}"
             return self.format_output(result)
         except (ValueError, IndexError):
-            return "[ALERT]: Invalid log formating"
+            return "[ALERT]: Invalid log formatting"
 
     def format_output(self, result: str) -> str:
         return f"Output: {result}"
@@ -117,23 +108,32 @@ class LogProcessor(DataProcessor):
 def check_processors() -> None:
     print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===\n")
 
-    num_data: list[int] = [1, 2, 3, 4, 5]
+    num_data: list[float] = [1, 2, 3, 4, 5]
     text_data: str = "Hello 42 World"
     log_data: str = "ERROR: Connection timeout"
-    log_data2: str = "INFO: System Ready"
+    log_data2: str = "INFO: System ready"
 
     # NUM PROCESSOR
     num_processor = NumericProcessor()
+    if (num_processor.validate(num_data)):
+        print(f"Processing Data: {num_data}")
+        print("Validation: Numeric data verified")
     print(num_processor.process(num_data))
 
     # TEXT PROCESSOR
     print()
     text_processor = TextProcessor()
+    if (text_processor.validate(text_data)):
+        print(f"Processing Data: {text_data}")
+        print("Validation: Text data verified")
     print(text_processor.process(text_data))
 
     # LOG PROCESSOR
     print()
     log_processor = LogProcessor()
+    if (log_processor.validate(log_data)):
+        print(f"Processing Data: {log_data}")
+        print("Validation: Log entry verified")
     print(log_processor.process(log_data))
 
     print("\n=== Polymorphic Processing Demo ===")
@@ -146,7 +146,7 @@ def check_processors() -> None:
     ]
 
     for processor, data in processors:
-        print(processor.process(data))
+        print(f"Result: {processor.process(data)}")
 
 
 if __name__ == "__main__":
