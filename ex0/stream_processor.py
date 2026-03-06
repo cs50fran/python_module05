@@ -19,13 +19,13 @@ class NumericProcessor(DataProcessor):
     def __init__(self) -> None:
         print("\nInitializing Numeric Processor...")
 
-    def validate(self, data: list[float]) -> bool:
+    def validate(self, data: list[int]) -> bool:
         if isinstance(data, list) and len(data) > 0:
-            if all(isinstance(i, (float)) for i in data):
+            if all(isinstance(i, (int, float)) for i in data):
                 return True
         return False
 
-    def process(self, data: list[float]) -> str:
+    def process(self, data: list[int]) -> str:
         try:
             if not self.validate(data):
                 raise ValueError("Invalid numeric data")
@@ -77,7 +77,7 @@ class LogProcessor(DataProcessor):
 
     def validate(self, data: str) -> bool:
         if isinstance(data, str) and len(data) > 0:
-            if len(data.split(":")) == 2:
+            if len(data.split(":",)) == 2:
                 return True
         return False
 
@@ -108,7 +108,7 @@ class LogProcessor(DataProcessor):
 def check_processors() -> None:
     print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===\n")
 
-    num_data: list[float] = [1, 2, 3, 4, 5]
+    num_data: list[int] = [1, 2, 3, 4, 5]
     text_data: str = "Hello 42 World"
     log_data: str = "ERROR: Connection timeout"
     log_data2: str = "INFO: System ready"
@@ -147,6 +147,7 @@ def check_processors() -> None:
 
     for processor, data in processors:
         print(f"Result: {processor.process(data)}")
+    print("\nFoundation systems online. Nexus ready for advanced streams.")
 
 
 if __name__ == "__main__":
