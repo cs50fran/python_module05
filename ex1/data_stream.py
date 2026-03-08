@@ -48,11 +48,11 @@ class SensorStream(DataStream):
                 if key.lower() == "temp":
                     temps.append(float(value))
 
-                avg_temp = sum(temps) / len(temps) if temps else 0.0
             except ValueError:
                 print(f"Invalid data format: {item}")
 
         self.processed_batches += 1
+        avg_temp = sum(temps) / len(temps) if temps else 0.0
 
         return (
             f"Sensor analysis: {len(data_batch)} readings processed,"
@@ -77,9 +77,9 @@ class TransactionStream(DataStream):
                 # net_flow = int(value) if op == "buy" else -int(value)
 
                 if op.lower().strip() == "buy":
-                    net_flow -= int(value)
-                elif op.lower().strip() == "sell":
                     net_flow += int(value)
+                elif op.lower().strip() == "sell":
+                    net_flow -= int(value)
                 else:
                     raise ValueError(
                         f"Invalid data format: {op} - use 'buy' or 'sell'")
@@ -88,8 +88,6 @@ class TransactionStream(DataStream):
                 print(f"Invalid transaction format: {item}, skipping")
 
         self.processed_batches += 1
-
-        net_flow = -net_flow
         sign = "+" if net_flow >= 0 else ""
 
         return (
@@ -167,7 +165,7 @@ class StreamProcessor:
 
         print(
             f"Filtered results: {sensor_alerts} critical sensor alerts,"
-            f" {large_tx} large transaction"
+            f" {large_tx} large transactions"
         )
 
 
