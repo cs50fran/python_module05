@@ -45,11 +45,15 @@ class OutputStage:
         if not isinstance(data, dict):
             return f"Raw data output: {data}"
 
-        if "value" in data:
+        if "value" in data and data['sensor'].lower() == "temp":
             val = data["value"]
             unit = data.get("unit", "C")
-            return (f"Processed temperature reading: "
-                    f"{val}°{unit} (Normal range)")
+            if unit.lower() == "c" and (10 < val < 30):
+                return (f"Processed temperature reading: "
+                        f"{val}°{unit} (Normal range)")
+            else:
+                return (f"Processed temperature reading: "
+                        f"{val}°{unit} (I hope you can handle this...)")
 
         if "fields" in data:
             count = data.get("count", 0)
@@ -260,7 +264,7 @@ def main() -> None:
 
     # JSON processing
     print("Processing JSON data through pipeline...")
-    json_data: Dict[str, Any] = {"sensor": "temp", "value": 23.5, "unit": "C"}
+    json_data: Dict[str, Any] = {"value": 25.5}
     print(f"Input: {json_data}")
     manager.execute_all(json_data)
     print()
